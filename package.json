@@ -3,7 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build -c vite.static.config.js"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.23",

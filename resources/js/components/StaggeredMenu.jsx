@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { motion, AnimatePresence } from 'framer-motion';

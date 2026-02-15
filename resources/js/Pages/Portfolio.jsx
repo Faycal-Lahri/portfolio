@@ -1,17 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import LiquidEther from '../components/LiquidEther';
-import Hero from '../components/Hero';
-import TechMarquee from '../components/TechMarquee';
-import About from '../components/About';
-import Education from '../components/Education';
-import Skills from '../components/Skills';
-import Projects from '../components/Projects';
-import Internships from '../components/Internships';
-import Certifications from '../components/Certifications';
-import AdditionalExp from '../components/AdditionalExp';
-import Contact from '../components/Contact';
-import StaggeredMenu from '../components/StaggeredMenu';
+import LiquidEther from '../Components/LiquidEther';
+import Hero from '../Components/Hero';
+import TechMarquee from '../Components/TechMarquee';
+import About from '../Components/About';
+import Education from '../Components/Education';
+import Skills from '../Components/Skills';
+import Projects from '../Components/Projects';
+import Internships from '../Components/Internships';
+import Certifications from '../Components/Certifications';
+import AdditionalExp from '../Components/AdditionalExp';
+import Contact from '../Components/Contact';
+import StaggeredMenu from '../Components/StaggeredMenu';
 
 const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '#' },

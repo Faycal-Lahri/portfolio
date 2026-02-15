@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PixelTrail } from "@/components/ui/pixel-trail";
-import { useScreenSize } from "@/components/hooks/use-screen-size";
+import { PixelTrail } from "@/Components/ui/pixel-trail";
+import { useScreenSize } from "@/Components/hooks/use-screen-size";
 
 const defaultCertifications = [
     {

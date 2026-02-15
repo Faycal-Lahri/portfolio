@@ -1,4 +1,4 @@
-import { DottedSurface } from "@/components/ui/dotted-surface";
+import { DottedSurface } from "@/Components/ui/dotted-surface";
 import { cn } from '@/lib/utils';
 
 export function DottedSurfaceDemo() {

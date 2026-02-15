@@ -1,4 +1,4 @@
-import EtheralShadow from "@/components/ui/etheral-shadow";
+import EtheralShadow from "@/Components/ui/etheral-shadow";
 
 const DemoOne = () => {
     return (

@@ -3,7 +3,7 @@ import { motion, useAnimationControls } from "framer-motion"
 import { v4 as uuidv4 } from "uuid"
 
 import { cn } from "@/lib/utils"
-import { useDimensions } from "@/components/hooks/use-debounced-dimensions"
+import { useDimensions } from "@/Components/hooks/use-debounced-dimensions"
 
 const PixelTrail = ({
     pixelSize = 20,

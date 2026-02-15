@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { FloatingPaths } from '@/components/ui/background-paths';
-import { Gravity, MatterBody } from '@/components/ui/gravity';
-import { DottedSurface } from '@/components/ui/dotted-surface';
+import { FloatingPaths } from '@/Components/ui/background-paths';
+import { Gravity, MatterBody } from '@/Components/ui/gravity';
+import { DottedSurface } from '@/Components/ui/dotted-surface';
 
 const defaultCategories = [
     {

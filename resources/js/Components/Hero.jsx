@@ -55,7 +55,7 @@ export default function Hero({ isDarkMode }) {
 
             {/* Bottom Left Circular Text */}
             <motion.div
-                className="absolute bottom-6 left-6 md:bottom-10 md:left-20 z-40 block"
+                className="absolute bottom-6 left-6 md:bottom-10 md:left-20 z-40 hidden lg:block"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1, duration: 1 }}
@@ -69,7 +69,7 @@ export default function Hero({ isDarkMode }) {
 
             {/* Bottom Middle Scroll Indicator - Apple Style */}
             <motion.div
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-4 z-40"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 2.5, duration: 1.5, ease: "easeOut" }}

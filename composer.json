@@ -10,6 +10,8 @@
     "require": {
         "php": "^8.2",
         "ext-pdo_mysql": "*",
+        "ext-bcmath": "*",
+        "ext-gd": "*",
         "filament/filament": "^2.17",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^0.6.3",

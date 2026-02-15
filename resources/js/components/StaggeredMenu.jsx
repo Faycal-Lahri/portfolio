@@ -1,7 +1,9 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+﻿import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export const StaggeredMenu = ({
+const StaggeredMenu = ({
     position = 'right',
     colors = ['#B19EEF', '#5227FF'],
     items = [],
@@ -23,7 +25,22 @@ export const StaggeredMenu = ({
     const [open, setOpen] = useState(false);
     const openRef = useRef(false);
 
+    // Toast State
+    const [showToast, setShowToast] = useState(false);
+    const [domReady, setDomReady] = useState(false);
+
+    useEffect(() => {
+        setDomReady(true);
+    }, []);
+
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+    };
+
     const panelRef = useRef(null);
+
     const preLayersRef = useRef(null);
     const preLayerElsRef = useRef([]);
 
@@ -456,32 +473,33 @@ export const StaggeredMenu = ({
                         >
                             {items && items.length ? (
                                 items.map((it, idx) => (
-                                    <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
+                                    <li className="sm-panel-itemWrap relative overflow-hidden w-full" key={it.label + idx}>
                                         <a
-                                            className="sm-panel-item group relative font-semibold text-[3rem] md:text-[4rem] cursor-pointer leading-none tracking-[-2px] uppercase transition-colors duration-300 ease-in-out inline-block no-underline pr-[1.4em] text-[--sm-text] hover:text-[--sm-accent]"
+                                            className="sm-panel-item group w-full flex items-baseline justify-between py-1 cursor-pointer no-underline text-[--sm-text] transition-colors duration-300"
                                             href={it.link}
                                             aria-label={it.ariaLabel}
                                             data-index={idx + 1}
                                             onClick={() => {
-                                                if (!it.link.startsWith('#')) return; // Allow normal navigation
-                                                // Manually close menu for smooth scroll anchors
+                                                if (!it.link.startsWith('#')) return;
                                                 closeMenu();
                                             }}
                                         >
-                                            <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform relative z-10">
+                                            <span
+                                                className="sm-panel-itemLabel font-bold text-[1.75rem] md:text-[2.5rem] tracking-tight leading-[1.1] uppercase transition-transform duration-500 ease-out group-hover:translate-x-6 group-hover:text-[--sm-accent]"
+                                            >
                                                 {it.label}
                                             </span>
-                                            {/* Animated Underline */}
-                                            <span className="absolute bottom-2 left-0 w-full h-[4px] bg-[var(--sm-accent)] origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100 z-0" />
+
+                                            <span className="sm-panel-number text-lg md:text-xl font-mono opacity-30 group-hover:opacity-100 group-hover:text-[--sm-accent] group-hover:-translate-x-2 transition-all duration-500 ease-out">
+                                                {String(idx + 1).padStart(2, '0')}
+                                            </span>
                                         </a>
                                     </li>
                                 ))
                             ) : (
-                                <li className="sm-panel-itemWrap relative overflow-hidden leading-none" aria-hidden="true">
-                                    <span className="sm-panel-item relative font-semibold text-[4rem] cursor-pointer leading-none tracking-[-2px] uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em] text-[--sm-text]">
-                                        <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
-                                            No items
-                                        </span>
+                                <li className="sm-panel-itemWrap relative overflow-hidden" aria-hidden="true">
+                                    <span className="sm-panel-item font-bold text-[2rem] uppercase text-[--sm-text] opacity-50">
+                                        No items
                                     </span>
                                 </li>
                             )}
@@ -496,15 +514,25 @@ export const StaggeredMenu = ({
                                 >
                                     {socialItems.map((s, i) => (
                                         <li key={s.label + i} className="sm-socials-item">
-                                            <a
-                                                href={s.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="sm-socials-link text-[1.2rem] font-medium no-underline relative inline-block py-[2px] transition-[color,opacity] duration-300 ease-linear"
-                                                style={{ color: 'var(--sm-text)' }}
-                                            >
-                                                {s.label}
-                                            </a>
+                                            {s.action === 'copy' ? (
+                                                <button
+                                                    onClick={() => handleCopy(s.value)}
+                                                    className="sm-socials-link text-[1.2rem] font-medium no-underline relative inline-block py-[2px] transition-[color,opacity] duration-300 ease-linear bg-transparent border-0 cursor-pointer"
+                                                    style={{ color: 'var(--sm-text)' }}
+                                                >
+                                                    {s.label}
+                                                </button>
+                                            ) : (
+                                                <a
+                                                    href={s.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="sm-socials-link text-[1.2rem] font-medium no-underline relative inline-block py-[2px] transition-[color,opacity] duration-300 ease-linear"
+                                                    style={{ color: 'var(--sm-text)' }}
+                                                >
+                                                    {s.label}
+                                                </a>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
@@ -513,6 +541,30 @@ export const StaggeredMenu = ({
                     </div>
                 </aside>
             </div>
+
+            {/* Toast Notification */}
+            {domReady && createPortal(
+                <AnimatePresence>
+                    {showToast && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 50, x: "-50%" }}
+                            animate={{ opacity: 1, y: 0, x: "-50%" }}
+                            exit={{ opacity: 0, y: 50, x: "-50%" }}
+                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            className="fixed bottom-8 left-1/2 z-[99999] flex items-center gap-2.5 px-4 py-2 rounded-full bg-black dark:bg-white text-white dark:text-black shadow-[0_8px_30px_rgb(0,0,0,0.12)] pointer-events-none whitespace-nowrap"
+                            style={{ translateX: "-50%" }}
+                        >
+                            <div className="flex items-center justify-center w-4 h-4 rounded-full bg-white dark:bg-black text-black dark:text-white shrink-0">
+                                <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span className="text-[13px] font-semibold pr-1">Copied to clipboard</span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
 
             <style>{`
 .sm-scope .staggered-menu-wrapper { position: relative; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
@@ -530,7 +582,8 @@ export const StaggeredMenu = ({
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
 .sm-scope .sm-line { display: none !important; }
-.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; -ms-overflow-style: none; scrollbar-width: none; }
+.sm-scope .staggered-menu-panel::-webkit-scrollbar { display: none; }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
@@ -549,11 +602,7 @@ export const StaggeredMenu = ({
 .sm-scope .sm-socials-link:hover { color: var(--sm-accent, #ff0000); }
 .sm-scope .sm-panel-title { margin: 0; font-size: 1rem; font-weight: 600; text-transform: uppercase; }
 .sm-scope .sm-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.sm-scope .sm-panel-item { position: relative; font-weight: 600; font-size: 4rem; cursor: pointer; line-height: 1; letter-spacing: -2px; text-transform: uppercase; transition: background 0.25s, color 0.25s; display: inline-block; text-decoration: none; padding-right: 1.4em; }
-.sm-scope .sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
-.sm-scope .sm-panel-item:hover { color: var(--sm-accent, #ff0000); }
-.sm-scope .sm-panel-list[data-numbering] { counter-reset: smItem; }
-.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.1em; right: 3.2em; font-size: 18px; font-weight: 400; color: var(--sm-accent, #ff0000); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); }
+.sm-scope .sm-panel-item { position: relative; width: 100%; cursor: pointer; text-decoration: none; }
 @media (max-width: 1024px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(100%); } }
 @media (max-width: 640px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(100%); } }
       `}</style>

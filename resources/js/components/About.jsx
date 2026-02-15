@@ -1,10 +1,15 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import TextType from './TextType';
 
-export default function About() {
+export default function About({ data }) {
     const ref = useRef(null);
     const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
     const yParallax = useTransform(scrollYProgress, [0, 1], [50, -50]);
+
+    // Use a default string if data is missing, but prefer data.bio
+    const bio = data?.bio || "Software Engineer Student passionate about Web Technologies, AI, & Prompting.";
+    const status = data?.status || "Currently in my 4th year (2nd year of Engineering Cycle).";
 
     return (
         <section ref={ref} id="about" className="py-32 px-6 md:px-16 relative z-10 flex flex-col md:flex-row justify-between items-start gap-20 overflow-hidden">
@@ -14,11 +19,20 @@ export default function About() {
 
             <motion.div
                 style={{ y: yParallax }}
-                className="md:w-1/4 sticky top-32"
+                className="md:w-1/4 relative md:sticky md:top-32"
             >
-                <div className="w-full h-[1px] bg-gradient-to-r from-white/50 to-transparent mb-6" />
-                <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 dark:text-white/60 mb-2">The Architect</h2>
-                <h3 className="text-3xl font-light text-black dark:text-white">Who I Am</h3>
+                <div className="w-full h-[1px] bg-gradient-to-r from-black/10 to-transparent dark:from-white/20 mb-6" />
+                <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400 mb-2">The Architect</h2>
+                <h3 className="text-3xl font-light text-black dark:text-white mb-8">Who I Am</h3>
+
+                {/* Profile Image moved here */}
+                <div className="relative w-32 h-32 md:w-48 md:h-48 rounded-2xl overflow-hidden border border-neutral-200 dark:border-white/10 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <img
+                        src={data?.image || "/images/profile.png"}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
             </motion.div>
 
             <div className="md:w-3/4 flex flex-col gap-16 relative">
@@ -28,44 +42,41 @@ export default function About() {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 1, ease: 'easeOut' }}
                 >
-                    <p className="text-4xl md:text-6xl font-extralight leading-[1.1] text-black dark:text-white tracking-tight">
-                        Crafting digital <span className="text-neutral-500 font-serif italic">experiences</span> that exist somewhere between <span className="border-b border-black/20 dark:border-white/20 pb-1">poetry</span> and <span className="border-b border-black/20 dark:border-white/20 pb-1">precision</span>.
-                    </p>
+                    <div className="flex flex-col gap-6 relative">
+                        {/*
+                            Ghost Element for Layout Sizing
+                            This contains the full text but is invisible, ensuring the container
+                            is always the full correct height from the start.
+                         */}
+                        <div
+                            className="text-4xl md:text-6xl font-extralight leading-[1.1] tracking-tight opacity-0 select-none pointer-events-none whitespace-pre-wrap"
+                            aria-hidden="true"
+                        >
+                            {bio}
+                        </div>
+
+                        {/* Actual Typing Animation Overlay */}
+                        <div className="absolute top-0 left-0 w-full h-full text-4xl md:text-6xl font-extralight leading-[1.1] text-black dark:text-white tracking-tight">
+                            <TextType
+                                text={[bio]}
+                                typingSpeed={50}
+                                pauseDuration={5000}
+                                showCursor={true}
+                                cursorCharacter="|"
+                                loop={false}
+                                variableSpeedEnabled={true}
+                                variableSpeedMin={30}
+                                variableSpeedMax={70}
+                            />
+                        </div>
+
+                        <p className="text-xl text-neutral-500 dark:text-neutral-400 font-light max-w-2xl mt-8">
+                            {status}
+                        </p>
+                    </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, duration: 1 }}
-                        className="p-8 border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/[0.02] backdrop-blur-sm rounded-none hover:bg-black/10 dark:hover:bg-white/[0.04] transition-colors duration-500"
-                    >
-                        <h4 className="text-black dark:text-white text-lg mb-4 font-medium flex items-center gap-3">
-                            <span className="w-1.5 h-1.5 bg-black dark:bg-white rounded-full" />
-                            Engineering
-                        </h4>
-                        <p className="text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                            I build robust, scalable architectures using Laravel and React. Code is my medium, cleaner and more efficient with every iteration.
-                        </p>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4, duration: 1 }}
-                        className="p-8 border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/[0.02] backdrop-blur-sm rounded-none hover:bg-black/10 dark:hover:bg-white/[0.04] transition-colors duration-500"
-                    >
-                        <h4 className="text-black dark:text-white text-lg mb-4 font-medium flex items-center gap-3">
-                            <span className="w-1.5 h-1.5 bg-black dark:bg-white rounded-full" />
-                            Design
-                        </h4>
-                        <p className="text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                            Minimalism isn't just about less. It's about enough. I adhere to strict aesthetic principles inspired by Swiss design and modern interface patterns.
-                        </p>
-                    </motion.div>
-                </div>
+                {/* Removed Backend Mastery and Design & UI cards as requested */}
             </div>
         </section>
     );

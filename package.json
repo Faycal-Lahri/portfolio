@@ -3,22 +3,38 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build -c vite.static.config.js"
+        "build": "vite build"
     },
     "devDependencies": {
-        "autoprefixer": "^10.4.23",
+        "@headlessui/react": "^1.4.2",
+        "@inertiajs/react": "^1.0.0",
+        "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-react": "^4.2.0",
+        "autoprefixer": "^10.4.12",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
-        "postcss": "^8.5.6",
-        "tailwindcss": "^3.4.1",
+        "postcss": "^8.4.31",
+        "tailwindcss": "^3.2.1",
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "@vitejs/plugin-react": "^5.1.2",
-        "framer-motion": "^12.28.1",
+        "@radix-ui/react-slot": "^1.2.4",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "framer-motion": "^11.18.2",
         "gsap": "^3.14.2",
-        "react": "^19.2.3",
-        "react-dom": "^19.2.3",
-        "three": "^0.182.0"
+        "lodash": "^4.17.23",
+        "lucide-react": "^0.564.0",
+        "matter-js": "^0.20.0",
+        "next-themes": "^0.4.6",
+        "ogl": "^1.0.11",
+        "poly-decomp": "^0.3.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "svg-path-commander": "^2.1.11",
+        "tailwind-merge": "^3.4.1",
+        "tailwindcss-animate": "^1.0.7",
+        "three": "^0.160.1",
+        "uuid": "^13.0.0"
     }
 }

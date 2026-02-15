@@ -1,29 +1,32 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import LiquidEther from './components/LiquidEther';
-import Hero from './components/Hero';
-import TechMarquee from './components/TechMarquee';
-import About from './components/About';
-import Services from './components/Services';
-import Projects from './components/Projects';
-import Contact from './components/Contact';
-import StaggeredMenu from './components/StaggeredMenu';
+import LiquidEther from '../components/LiquidEther';
+import Hero from '../components/Hero';
+import TechMarquee from '../components/TechMarquee';
+import About from '../components/About';
+import Education from '../components/Education';
+import Skills from '../components/Skills';
+import Projects from '../components/Projects';
+import Internships from '../components/Internships';
+import Certifications from '../components/Certifications';
+import AdditionalExp from '../components/AdditionalExp';
+import Contact from '../components/Contact';
+import StaggeredMenu from '../components/StaggeredMenu';
 
 const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '#' },
-    { label: 'About', ariaLabel: 'Learn about us', link: '#about' },
-    { label: 'Services', ariaLabel: 'View our services', link: '#services' },
-    { label: 'Work', ariaLabel: 'View our work', link: '#work' },
+    { label: 'About', ariaLabel: 'About me', link: '#about' },
+    { label: 'Education', ariaLabel: 'My education', link: '#education' },
+    { label: 'Skills', ariaLabel: 'My skills', link: '#skills' },
+    { label: 'Work', ariaLabel: 'Academic projects', link: '#work' },
+    { label: 'Professional Exp.', ariaLabel: 'Professional experiences', link: '#stages' },
+    { label: 'Certifications', ariaLabel: 'My certifications', link: '#certifications' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '#contact' }
 ];
 
-const socialItems = [
-    { label: 'Twitter', link: 'https://twitter.com' },
-    { label: 'GitHub', link: 'https://github.com' },
-    { label: 'LinkedIn', link: 'https://linkedin.com' }
-];
 
-export default function Portfolio() {
+
+export default function Portfolio({ about, education, skills, technologies, projects, internships, certifications, additionalExp }) {
     const [isDark, setIsDark] = useState(true);
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
@@ -46,6 +49,11 @@ export default function Portfolio() {
         }
     }, [isDark]);
 
+    const socialItems = [
+        { label: 'LinkedIn', link: about?.linkedin || 'https://linkedin.com' },
+        { label: 'Email', value: about?.email || 'contact@portfolio.com', action: 'copy' }
+    ];
+
     return (
         <div className="min-h-screen w-full relative">
             <main ref={containerRef} className="bg-white text-black dark:bg-black dark:text-white min-h-screen w-full relative transition-colors duration-700">
@@ -66,7 +74,6 @@ export default function Portfolio() {
                     darkMode={isDark}
                 />
 
-                {/* Theme Toggle Button - Bottom Right Redesign */}
                 {/* Theme Toggle Button - Minimalist & Premium */}
                 <motion.button
                     onClick={() => setIsDark(!isDark)}
@@ -75,7 +82,7 @@ export default function Portfolio() {
                     transition={{ delay: 1, type: "spring", stiffness: 260, damping: 20 }}
                     whileHover={{ scale: 1.1, rotate: 15 }}
                     whileTap={{ scale: 0.9 }}
-                    className="fixed bottom-8 right-8 z-[60] w-12 h-12 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-colors duration-500 overflow-hidden"
+                    className="fixed bottom-8 right-8 z-[60] w-12 h-12 rounded-full bg-white/80 backdrop-blur-xl border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center transition-colors duration-500 overflow-hidden"
                     title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
                     <motion.div
@@ -85,7 +92,7 @@ export default function Portfolio() {
                             scale: 1
                         }}
                         transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                        className="relative w-6 h-6 flex items-center justify-center text-black dark:text-white"
+                        className="relative w-6 h-6 flex items-center justify-center text-black"
                     >
                         {isDark ? (
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -130,17 +137,20 @@ export default function Portfolio() {
 
                 {/* Scroll Progress Bar */}
                 <motion.div
-                    className="fixed top-0 left-0 right-0 h-1 bg-black dark:bg-white origin-left z-50 mix-blend-difference"
+                    className="fixed top-0 left-0 right-0 h-1 bg-black origin-left z-50 mix-blend-difference"
                     style={{ scaleX: scrollYProgress }}
                 />
 
                 <div className="relative z-10 w-full overflow-hidden">
-                    <Hero />
-                    <TechMarquee />
-                    <About />
-                    <Services />
-                    <Projects />
-                    <Contact />
+                    <Hero isDarkMode={isDark} />
+                    <TechMarquee technologies={technologies} />
+                    <About data={about} />
+                    <Education data={education} />
+                    <Skills data={skills} />
+                    <Projects data={projects} />
+                    <Internships data={internships} />
+                    <Certifications data={certifications} />
+                    <Contact about={about} />
                 </div>
 
                 {/* Deep Background Parallax Element */}
@@ -148,8 +158,8 @@ export default function Portfolio() {
                     className="fixed inset-0 pointer-events-none z-0 opacity-10 mix-blend-overlay"
                     style={{ y: backgroundY }}
                 >
-                    <div className="absolute top-[20%] left-[10%] w-[80vw] h-[80vw] border border-black/5 dark:border-white/5 rounded-full transition-colors duration-700" />
-                    <div className="absolute top-[40%] right-[10%] w-[60vw] h-[60vw] border border-black/5 dark:border-white/5 rounded-full transition-colors duration-700" />
+                    <div className="absolute top-[20%] left-[10%] w-[80vw] h-[80vw] border border-black/5 rounded-full transition-colors duration-700" />
+                    <div className="absolute top-[40%] right-[10%] w-[60vw] h-[60vw] border border-black/5 rounded-full transition-colors duration-700" />
                 </motion.div>
             </main>
         </div>

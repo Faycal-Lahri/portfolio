@@ -46,37 +46,70 @@ const Icons = {
 };
 
 const topRow = [
-    { name: "n8n", Icon: Icons.n8n },
-    { name: "Github", Icon: Icons.github },
-    { name: "React", Icon: Icons.react },
-    { name: "Laravel", Icon: Icons.laravel },
-    { name: "Next.js", Icon: Icons.nextjs },
-    { name: "Tailwind", Icon: Icons.tailwind },
+    { name: "n8n", Icon: Icons.n8n, color: "#FF6D5A" },
+    { name: "Github", Icon: Icons.github, color: "#181717" },
+    { name: "React", Icon: Icons.react, color: "#61DAFB" },
+    { name: "Laravel", Icon: Icons.laravel, color: "#FF2D20" },
+    { name: "Next.js", Icon: Icons.nextjs, color: "#000000" },
+    { name: "Tailwind", Icon: Icons.tailwind, color: "#38B2AC" },
 ];
 
 const bottomRow = [
-    { name: "Docker", Icon: Icons.docker },
-    { name: "Python", Icon: Icons.python },
-    { name: "Github", Icon: Icons.github },
-    { name: "n8n", Icon: Icons.n8n },
-    { name: "React", Icon: Icons.react },
-    { name: "Laravel", Icon: Icons.laravel },
+    { name: "Docker", Icon: Icons.docker, color: "#2496ED" },
+    { name: "Python", Icon: Icons.python, color: "#3776AB" },
+    { name: "Github", Icon: Icons.github, color: "#ffffff" },
+    { name: "n8n", Icon: Icons.n8n, color: "#FF6D5A" },
+    { name: "React", Icon: Icons.react, color: "#61DAFB" },
+    { name: "Laravel", Icon: Icons.laravel, color: "#FF2D20" },
 ];
 
-export default function TechMarquee() {
-    return (
-        <section className="py-24 md:py-32 relative z-20 overflow-visible">
-            {/* 3D Rotated Container */}
-            <div className="rotate-[-1deg] md:rotate-[-2deg] scale-100 md:scale-105 origin-center">
+export default function TechMarquee({ technologies = [] }) {
 
-                {/* Row 1 - Bright White Background with BLACK Logos */}
-                <div className="bg-white py-6 border-y-4 border-black relative z-20 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
-                    <MarqueeTrack items={topRow} direction="left" theme="light" />
+    // Prepare data
+    let finalTopRow = topRow;
+    let finalBottomRow = bottomRow;
+
+    if (technologies && technologies.length > 0) {
+        // Map DB data to component format
+        const formattedTechs = technologies.map(t => ({
+            name: t.name,
+            color: t.color || '#000000',
+            // Create a component that renders the image
+            Icon: (props) => (
+                <img
+                    src={t.icon}
+                    alt={t.name}
+                    className="w-full h-full object-contain"
+                    {...props}
+                    // Remove fill since it's an image, or use CSS filter if needed
+                    style={{ filter: t.color ? 'none' : 'grayscale(100%)' }}
+                />
+            )
+        }));
+
+        // Split into two rows
+        const midpoint = Math.ceil(formattedTechs.length / 2);
+        finalTopRow = formattedTechs.slice(0, midpoint);
+        finalBottomRow = formattedTechs.slice(midpoint);
+
+        // If only a few items, duplicate them to ensure marquee fills width
+        if (finalTopRow.length < 5) finalTopRow = [...finalTopRow, ...finalTopRow, ...finalTopRow];
+        if (finalBottomRow.length < 5) finalBottomRow = [...finalBottomRow, ...finalBottomRow, ...finalBottomRow];
+    }
+
+    return (
+        <section className="py-0 relative z-20 overflow-hidden">
+            {/* Horizontal Container */}
+            <div className="relative z-20 w-full">
+
+                {/* Row 1 */}
+                <div className="bg-white dark:bg-black py-4 border-y border-neutral-100 dark:border-white/5 relative z-20 overflow-hidden">
+                    <MarqueeTrack items={finalTopRow} direction="left" theme="light" />
                 </div>
 
-                {/* Row 2 - Deep Black Background with WHITE Logos */}
-                <div className="bg-black py-6 border-b border-white/10 relative z-10 overflow-hidden -mt-1">
-                    <MarqueeTrack items={bottomRow} direction="right" theme="dark" />
+                {/* Row 2 */}
+                <div className="bg-white dark:bg-black py-4 border-b border-neutral-100 dark:border-white/5 relative z-10 overflow-hidden -mt-[1px]">
+                    <MarqueeTrack items={finalBottomRow} direction="right" theme="light" />
                 </div>
 
             </div>
@@ -103,10 +136,12 @@ function MarqueeTrack({ items, direction, theme }) {
                     {items.map((tech, index) => (
                         <div key={index} className="flex items-center gap-4 group cursor-default">
                             {/* Logo Icon */}
-                            <tech.Icon className={`w-10 h-10 md:w-12 md:h-12 ${theme === 'light' ? 'text-black' : 'text-white'} opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300`} />
+                            <div style={{ color: tech.color }} className="text-black dark:text-white transition-colors duration-300">
+                                <tech.Icon className={`w-10 h-10 md:w-12 md:h-12 opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300`} />
+                            </div>
 
-                            {/* Text Label */}
-                            <span className={`text-2xl md:text-3xl font-bold uppercase tracking-tighter ${theme === 'light' ? 'text-black' : 'text-white'}`}>
+                            {/* Text Label - Always Dark in Light Mode for Apple feel */}
+                            <span className="text-2xl md:text-3xl font-bold uppercase tracking-tighter text-neutral-800 dark:text-neutral-200">
                                 {tech.name}
                             </span>
                         </div>

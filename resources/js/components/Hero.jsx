@@ -67,6 +67,34 @@ export default function Hero({ isDarkMode }) {
                 />
             </motion.div>
 
+            {/* Bottom Middle Scroll Indicator - Apple Style */}
+            <motion.div
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 2.5, duration: 1.5, ease: "easeOut" }}
+            >
+                <span className="text-[9px] uppercase tracking-[0.4em] font-extrabold text-black dark:text-white transition-colors">
+                    Scroll Down
+                </span>
+
+                {/* Minimalist Mouse Pill */}
+                <div className="w-[18px] h-[30px] rounded-full border border-black/10 dark:border-white/10 flex justify-center p-1.5 backdrop-blur-[2px]">
+                    <motion.div
+                        className="w-[1.5px] h-[4px] bg-black/40 dark:bg-white/40 rounded-full"
+                        animate={{
+                            y: [0, 10, 0],
+                            opacity: [0, 1, 0]
+                        }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    />
+                </div>
+            </motion.div>
+
         </section>
     );
 }

@@ -12,24 +12,31 @@ Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 Route::post('/admin/about', [AdminController::class, 'updateAbout'])->name('admin.about.update');
 
 Route::post('/admin/projects', [AdminController::class, 'storeProject'])->name('admin.projects.store');
+Route::post('/admin/projects/{project}', [AdminController::class, 'updateProject'])->name('admin.projects.update');
 Route::delete('/admin/projects/{project}', [AdminController::class, 'deleteProject'])->name('admin.projects.delete');
 
 Route::post('/admin/education', [AdminController::class, 'storeEducation'])->name('admin.education.store');
+Route::post('/admin/education/{education}', [AdminController::class, 'updateEducation'])->name('admin.education.update');
 Route::delete('/admin/education/{education}', [AdminController::class, 'deleteEducation'])->name('admin.education.delete');
 
 Route::post('/admin/skills', [AdminController::class, 'storeSkill'])->name('admin.skills.store');
+Route::post('/admin/skills/{skill}', [AdminController::class, 'updateSkill'])->name('admin.skills.update');
 Route::delete('/admin/skills/{skill}', [AdminController::class, 'deleteSkill'])->name('admin.skills.delete');
 
 Route::post('/admin/technologies', [AdminController::class, 'storeTechnology'])->name('admin.technologies.store');
+Route::post('/admin/technologies/{technology}', [AdminController::class, 'updateTechnology'])->name('admin.technologies.update');
 Route::delete('/admin/technologies/{technology}', [AdminController::class, 'deleteTechnology'])->name('admin.technologies.delete');
 
 Route::post('/admin/internships', [AdminController::class, 'storeInternship'])->name('admin.internships.store');
+Route::post('/admin/internships/{internship}', [AdminController::class, 'updateInternship'])->name('admin.internships.update');
 Route::delete('/admin/internships/{internship}', [AdminController::class, 'deleteInternship'])->name('admin.internships.delete');
 
 Route::post('/admin/certifications', [AdminController::class, 'storeCertification'])->name('admin.certifications.store');
+Route::post('/admin/certifications/{certification}', [AdminController::class, 'updateCertification'])->name('admin.certifications.update');
 Route::delete('/admin/certifications/{certification}', [AdminController::class, 'deleteCertification'])->name('admin.certifications.delete');
 
 Route::post('/admin/additional', [AdminController::class, 'storeAdditionalExp'])->name('admin.additional.store');
+Route::post('/admin/additional/{experience}', [AdminController::class, 'updateAdditionalExp'])->name('admin.additional.update');
 Route::delete('/admin/additional/{experience}', [AdminController::class, 'deleteAdditionalExp'])->name('admin.additional.delete');
 
 // Profile routes are typically for auth users, but if you want to remove auth completely, 

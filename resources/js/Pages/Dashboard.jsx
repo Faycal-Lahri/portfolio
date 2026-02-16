@@ -29,10 +29,18 @@ const SidebarItem = ({ active, icon, label, onClick }) => (
     </button>
 );
 
-export default function Dashboard({ auth, about, education, skills, technologies, projects, internships, certifications }) {
+export default function Dashboard({ auth, about, education, skills, technologies, projects, internships, certifications, additionalExp }) {
     const { flash } = usePage().props;
     const [activeTab, setActiveTab] = useState('about');
     const [isLoading, setIsLoading] = useState(true);
+
+    const [editingEdu, setEditingEdu] = useState(null);
+    const [editingSkill, setEditingSkill] = useState(null);
+    const [editingTech, setEditingTech] = useState(null);
+    const [editingInternship, setEditingInternship] = useState(null);
+    const [editingCert, setEditingCert] = useState(null);
+    const [editingProject, setEditingProject] = useState(null);
+    const [editingAdditional, setEditingAdditional] = useState(null);
 
     useEffect(() => {
         setTimeout(() => setIsLoading(false), 800);
@@ -91,6 +99,14 @@ export default function Dashboard({ auth, about, education, skills, technologies
         simulation_type: 'image'
     });
 
+    // Additional Experience Form Hook
+    const { data: additionalData, setData: setAdditionalData, post: postAdditional, reset: resetAdditional } = useForm({
+        title: '',
+        type: '',
+        description: '',
+        icon: ''
+    });
+
     const submitAbout = (e) => {
         e.preventDefault();
         postAbout(route('admin.about.update'), {
@@ -100,33 +116,158 @@ export default function Dashboard({ auth, about, education, skills, technologies
 
     const submitProject = (e) => {
         e.preventDefault();
-        postProject(route('admin.projects.store'), {
-            onSuccess: () => resetProject(),
+        const url = editingProject ? route('admin.projects.update', editingProject.id) : route('admin.projects.store');
+        postProject(url, {
+            onSuccess: () => {
+                resetProject();
+                setEditingProject(null);
+            },
             forceFormData: true
         });
     };
-    const submitEdu = (e) => { e.preventDefault(); postEdu(route('admin.education.store'), { onSuccess: () => resetEdu() }); };
-    const submitSkill = (e) => { e.preventDefault(); postSkill(route('admin.skills.store'), { onSuccess: () => resetSkill() }); };
+    const submitEdu = (e) => {
+        e.preventDefault();
+        const url = editingEdu ? route('admin.education.update', editingEdu.id) : route('admin.education.store');
+        postEdu(url, {
+            onSuccess: () => {
+                resetEdu();
+                setEditingEdu(null);
+            }
+        });
+    };
+    const submitSkill = (e) => {
+        e.preventDefault();
+        const url = editingSkill ? route('admin.skills.update', editingSkill.id) : route('admin.skills.store');
+        postSkill(url, {
+            onSuccess: () => {
+                resetSkill();
+                setEditingSkill(null);
+            }
+        });
+    };
     const submitTech = (e) => {
         e.preventDefault();
-        postTech(route('admin.technologies.store'), {
-            onSuccess: () => resetTech(),
+        const url = editingTech ? route('admin.technologies.update', editingTech.id) : route('admin.technologies.store');
+        postTech(url, {
+            onSuccess: () => {
+                resetTech();
+                setEditingTech(null);
+            },
             forceFormData: true
         });
     };
     const submitInternship = (e) => {
         e.preventDefault();
-        postInternship(route('admin.internships.store'), {
-            onSuccess: () => resetInternship(),
+        const url = editingInternship ? route('admin.internships.update', editingInternship.id) : route('admin.internships.store');
+        postInternship(url, {
+            onSuccess: () => {
+                resetInternship();
+                setEditingInternship(null);
+            },
             forceFormData: true
         });
     };
 
     const submitCert = (e) => {
         e.preventDefault();
-        postCert(route('admin.certifications.store'), {
-            onSuccess: () => resetCert(),
+        const url = editingCert ? route('admin.certifications.update', editingCert.id) : route('admin.certifications.store');
+        postCert(url, {
+            onSuccess: () => {
+                resetCert();
+                setEditingCert(null);
+            },
             forceFormData: true
+        });
+    };
+
+    const submitAdditional = (e) => {
+        e.preventDefault();
+        const url = editingAdditional ? route('admin.additional.update', editingAdditional.id) : route('admin.additional.store');
+        postAdditional(url, {
+            onSuccess: () => {
+                resetAdditional();
+                setEditingAdditional(null);
+            }
+        });
+    };
+
+    const startEditEdu = (e) => {
+        setEditingEdu(e);
+        setEduData({
+            degree: e.degree,
+            school: e.school,
+            period: e.period,
+            specialty: e.specialty,
+            description: e.description || ''
+        });
+    };
+
+    const startEditSkill = (s) => {
+        setEditingSkill(s);
+        setSkillData({
+            category: s.category,
+            name: s.name,
+            type: s.type
+        });
+    };
+
+    const startEditTech = (t) => {
+        setEditingTech(t);
+        setTechData({
+            name: t.name,
+            icon: null, // Keep nul so we don't try to reuse string as file
+            color: t.color || ''
+        });
+    };
+
+    const startEditInternship = (i) => {
+        setEditingInternship(i);
+        setInternshipData({
+            type: i.type,
+            title: i.title,
+            logo: null,
+            role: i.role,
+            start_date: i.start_date,
+            end_date: i.end_date || '',
+            missions: Array.isArray(i.missions) ? i.missions.join('\n') : i.missions,
+            techs: Array.isArray(i.techs) ? i.techs.join(', ') : i.techs
+        });
+    };
+
+    const startEditCert = (c) => {
+        setEditingCert(c);
+        setCertData({
+            title: c.title,
+            org: c.org,
+            date: c.date,
+            link: c.link || '',
+            image: null
+        });
+    };
+
+    const startEditProject = (p) => {
+        setProjectData({
+            name: p.name,
+            tag: p.tag || 'Web App',
+            description: p.description,
+            techs: Array.isArray(p.techs) ? p.techs.join('\n') : p.techs,
+            role: p.role || '',
+            objectives: Array.isArray(p.features) ? p.features.join('\n') : (p.objectives || ''),
+            completion_date: p.completion_date || '',
+            image: null,
+            simulation: null,
+            simulation_type: p.simulation_type || 'image'
+        });
+        setEditingProject(p);
+    };
+
+    const startEditAdditional = (a) => {
+        setEditingAdditional(a);
+        setAdditionalData({
+            title: a.title,
+            type: a.type || '',
+            description: a.description || '',
+            icon: a.icon || ''
         });
     };
 
@@ -181,6 +322,7 @@ export default function Dashboard({ auth, about, education, skills, technologies
                             <SidebarItem onClick={() => setActiveTab('projects')} active={activeTab === 'projects'} icon={<IconCode className="w-5 h-5" />} label="Creations" />
                             <SidebarItem onClick={() => setActiveTab('internships')} active={activeTab === 'internships'} icon={<IconBriefcase className="w-5 h-5" />} label="Experience" />
                             <SidebarItem onClick={() => setActiveTab('certifications')} active={activeTab === 'certifications'} icon={<IconAward className="w-5 h-5" />} label="Credentials" />
+                            <SidebarItem onClick={() => setActiveTab('additional')} active={activeTab === 'additional'} icon={<IconGlobe className="w-5 h-5" />} label="Extra" />
                         </nav>
 
                         <div className="mt-auto border-t border-white/10 pt-6">
@@ -334,7 +476,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                     <input placeholder="2020 - 2024" className="bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20" value={eduData.period} onChange={e => setEduData('period', e.target.value)} />
                                                     <input placeholder="Major/Specialty" className="bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20" value={eduData.specialty} onChange={e => setEduData('specialty', e.target.value)} />
                                                     <div className="col-span-2 flex gap-4 mt-2">
-                                                        <button className="flex-1 bg-white text-black py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors">Add Entry</button>
+                                                        <button className="flex-1 bg-white text-black py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors">
+                                                            {editingEdu ? 'Update Entry' : 'Add Entry'}
+                                                        </button>
+                                                        {editingEdu && (
+                                                            <button type="button" onClick={() => { setEditingEdu(null); resetEdu(); }} className="px-6 bg-white/10 text-white py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-white/20 transition-colors">Cancel</button>
+                                                        )}
                                                     </div>
                                                 </form>
                                             </div>
@@ -346,7 +493,10 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                             <div className="text-xl font-light text-white">{e.degree}</div>
                                                             <div className="text-sm text-white/40 mt-1 font-mono">{e.school} <span className="mx-2 text-white/10">|</span> {e.period}</div>
                                                         </div>
-                                                        <button onClick={() => handleDelete('admin.education.delete', e.id)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 text-xs uppercase tracking-widest transition-opacity">Delete</button>
+                                                        <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onClick={() => startEditEdu(e)} className="text-white/40 hover:text-white text-xs uppercase tracking-widest">Edit</button>
+                                                            <button onClick={() => handleDelete('admin.education.delete', e.id)} className="text-red-400 hover:text-red-300 text-xs uppercase tracking-widest">Delete</button>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -363,7 +513,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                             <div className={`text-[8px] px-1.5 py-0.5 rounded border ${s.type === 'soft' ? 'border-purple-500/30 text-purple-300' : 'border-blue-500/30 text-blue-300'}`}>{s.type === 'soft' ? 'SOFT' : 'TECH'}</div>
                                                         </div>
                                                         <div className="text-lg font-medium text-white/90">{s.name}</div>
-                                                        <button onClick={() => handleDelete('admin.skills.delete', s.id)} className="absolute top-2 right-2 p-2 opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 transition-all">✕</button>
+                                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                            <button onClick={() => startEditSkill(s)} className="p-1.5 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg">
+                                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                            </button>
+                                                            <button onClick={() => handleDelete('admin.skills.delete', s.id)} className="p-1.5 text-white/40 hover:text-red-400 bg-white/5 hover:bg-red-500/10 rounded-lg">✕</button>
+                                                        </div>
                                                     </div>
                                                 ))}
 
@@ -441,8 +596,11 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                         )}
 
                                                         <button className={`mt-auto w-full py-2 rounded-lg text-xs font-bold uppercase transition-all ${skillData.type === 'technical' ? 'bg-white/10 hover:bg-white text-white hover:text-black' : 'bg-purple-500/20 hover:bg-purple-500 text-purple-200 hover:text-white'}`}>
-                                                            Add {skillData.type === 'technical' ? 'Tech' : 'Skill'}
+                                                            {editingSkill ? 'Update' : 'Add'} {skillData.type === 'technical' ? 'Tech' : 'Skill'}
                                                         </button>
+                                                        {editingSkill && (
+                                                            <button type="button" onClick={() => { setEditingSkill(null); resetSkill(); }} className="w-full py-2 rounded-lg text-[10px] font-bold uppercase bg-white/5 text-white/40 border border-white/5 hover:bg-white/10 transition-all">Cancel</button>
+                                                        )}
                                                     </form>
                                                 </div>
                                             </div>
@@ -479,7 +637,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                                 onChange={e => setTechData('icon', e.target.files[0])}
                                                             />
                                                         </div>
-                                                        <button className="w-32 h-12 bg-white text-black rounded-xl font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform">Add</button>
+                                                        <button className="w-32 h-12 bg-white text-black rounded-xl font-bold uppercase text-xs tracking-widest hover:scale-105 transition-transform">
+                                                            {editingTech ? 'Update' : 'Add'}
+                                                        </button>
+                                                        {editingTech && (
+                                                            <button type="button" onClick={() => { setEditingTech(null); resetTech(); }} className="px-4 h-12 bg-white/10 text-white rounded-xl font-bold uppercase text-[10px] tracking-widest hover:bg-white/20 transition-all">Cancel</button>
+                                                        )}
                                                     </div>
                                                 </form>
                                             </div>
@@ -494,10 +657,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                             <div className="text-lg font-bold text-white">{t.name}</div>
                                                             <div className="text-[10px] font-mono text-white/30 uppercase mt-1">{t.color || 'No Color'}</div>
                                                         </div>
-                                                        <button
-                                                            onClick={() => handleDelete('admin.technologies.delete', t.id)}
-                                                            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"
-                                                        >✕</button>
+                                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                            <button onClick={() => startEditTech(t)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/40 hover:bg-white hover:text-black transition-all">
+                                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                            </button>
+                                                            <button onClick={() => handleDelete('admin.technologies.delete', t.id)} className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all">✕</button>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -583,7 +748,14 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                         <input required className="w-full bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20" value={internshipData.techs} onChange={e => setInternshipData('techs', e.target.value)} placeholder="React, Laravel, Docker" />
                                                     </div>
 
-                                                    <button className="w-full bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">Publish Experience</button>
+                                                    <div className="flex gap-4">
+                                                        <button className="flex-1 bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
+                                                            {editingInternship ? 'Update Experience' : 'Publish Experience'}
+                                                        </button>
+                                                        {editingInternship && (
+                                                            <button type="button" onClick={() => { setEditingInternship(null); resetInternship(); }} className="px-8 bg-white/10 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-white/20 transition-colors">Cancel</button>
+                                                        )}
+                                                    </div>
                                                 </form>
                                             </div>
 
@@ -611,7 +783,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <span className="text-[10px] uppercase tracking-widest px-3 py-1 rounded bg-white/5 text-white/40 border border-white/5">{item.type}</span>
-                                                            <button onClick={() => handleDelete('admin.internships.delete', item.id)} className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">✕</button>
+                                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                                <button onClick={() => startEditInternship(item)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/40 hover:bg-white hover:text-black transition-all">
+                                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                                </button>
+                                                                <button onClick={() => handleDelete('admin.internships.delete', item.id)} className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all">✕</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -769,7 +946,14 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                     <input type="hidden" value={projectData.tag} />
                                                     <input type="hidden" value={projectData.role} />
 
-                                                    <button className="w-full bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">Launch Project</button>
+                                                    <div className="flex gap-4">
+                                                        <button className="flex-1 bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
+                                                            {editingProject ? 'Apply Changes' : 'Launch Project'}
+                                                        </button>
+                                                        {editingProject && (
+                                                            <button type="button" onClick={() => { setEditingProject(null); resetProject(); }} className="px-8 bg-white/10 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-white/20 transition-colors">Cancel</button>
+                                                        )}
+                                                    </div>
                                                 </form>
                                             </div>
 
@@ -779,7 +963,12 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                     <div key={p.id} className="group relative bg-white/[0.02] border border-white/5 rounded-[2rem] overflow-hidden hover:bg-white/[0.05] transition-all flex flex-col">
                                                         <div className="aspect-video bg-black/50 relative">
                                                             {p.image ? <img src={p.image} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" /> : <div className="w-full h-full flex items-center justify-center text-white/20 bg-white/5">No Cover</div>}
-                                                            <button onClick={() => handleDelete('admin.projects.delete', p.id)} className="absolute top-2 right-2 w-8 h-8 bg-red-500/80 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">✕</button>
+                                                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all z-20">
+                                                                <button onClick={() => startEditProject(p)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white hover:text-black backdrop-blur-md transition-all">
+                                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                                </button>
+                                                                <button onClick={() => handleDelete('admin.projects.delete', p.id)} className="w-8 h-8 bg-red-500/80 text-white rounded-full flex items-center justify-center transition-all hover:bg-red-600">✕</button>
+                                                            </div>
 
                                                             {/* Type Indicator */}
                                                             {p.simulation_type === 'video' && (
@@ -858,7 +1047,14 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                         </div>
                                                     </div>
 
-                                                    <button className="w-full bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">Add Credential</button>
+                                                    <div className="flex gap-4">
+                                                        <button className="flex-1 bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
+                                                            {editingCert ? 'Update Credential' : 'Add Credential'}
+                                                        </button>
+                                                        {editingCert && (
+                                                            <button type="button" onClick={() => { setEditingCert(null); resetCert(); }} className="px-8 bg-white/10 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-white/20 transition-colors">Cancel</button>
+                                                        )}
+                                                    </div>
                                                 </form>
                                             </div>
 
@@ -881,7 +1077,63 @@ export default function Dashboard({ auth, about, education, skills, technologies
                                                             <div className="text-xs font-mono text-white/40 uppercase mt-1">{cert.org} • {cert.date}</div>
                                                             {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-emerald-400 hover:underline mt-2 inline-block">View Credential &rarr;</a>}
                                                         </div>
-                                                        <button onClick={() => handleDelete('admin.certifications.delete', cert.id)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">✕</button>
+                                                        <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                            <button onClick={() => startEditCert(cert)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/40 hover:bg-white hover:text-black transition-all">
+                                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                            </button>
+                                                            <button onClick={() => handleDelete('admin.certifications.delete', cert.id)} className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all">✕</button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'additional' && (
+                                        <div className="space-y-8">
+                                            <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-8">
+                                                <form onSubmit={submitAdditional} className="space-y-6">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] uppercase tracking-widest text-white/30">Title</label>
+                                                            <input required className="w-full bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20" value={additionalData.title} onChange={e => setAdditionalData('title', e.target.value)} placeholder="e.g. Volunteer Work" />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] uppercase tracking-widest text-white/30">Type / Icon Code</label>
+                                                            <input className="w-full bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20" value={additionalData.icon} onChange={e => setAdditionalData('icon', e.target.value)} placeholder="e.g. Activity" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] uppercase tracking-widest text-white/30">Description</label>
+                                                        <textarea className="w-full h-32 bg-white/5 border-0 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-white/20 resize-none" value={additionalData.description} onChange={e => setAdditionalData('description', e.target.value)} placeholder="Describe the experience..." />
+                                                    </div>
+                                                    <div className="flex gap-4">
+                                                        <button className="flex-1 bg-white text-black py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
+                                                            {editingAdditional ? 'Update Experience' : 'Add Experience'}
+                                                        </button>
+                                                        {editingAdditional && (
+                                                            <button type="button" onClick={() => { setEditingAdditional(null); resetAdditional(); }} className="px-8 bg-white/10 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-white/20 transition-colors">Cancel</button>
+                                                        )}
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {additionalExp.map(item => (
+                                                    <div key={item.id} className="group relative p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all flex flex-col gap-4">
+                                                        <div className="flex justify-between items-start">
+                                                            <div>
+                                                                <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                                                                <div className="text-[10px] font-mono text-white/30 uppercase mt-1">{item.icon || 'General'}</div>
+                                                            </div>
+                                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                                <button onClick={() => startEditAdditional(item)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/40 hover:bg-white hover:text-black transition-all">
+                                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                                                </button>
+                                                                <button onClick={() => handleDelete('admin.additional.delete', item.id)} className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all">✕</button>
+                                                            </div>
+                                                        </div>
+                                                        <p className="text-sm text-white/60 line-clamp-3">{item.description}</p>
                                                     </div>
                                                 ))}
                                             </div>

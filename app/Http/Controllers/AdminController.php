@@ -52,13 +52,24 @@ class AdminController extends Controller
 
     public function deleteTechnology(Technology $technology)
     {
-        // Optional: Delete file from storage
-        if ($technology->icon && file_exists(public_path($technology->icon))) {
-            // Basic cleanup - stripping '/storage/' prefix might be needed depending on implementation
-            // keeping it simple for now or relying on just record deletion
-        }
-        
         $technology->delete();
+        return back();
+    }
+
+    public function updateTechnology(Request $request, Technology $technology)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'icon' => 'nullable|file|image|mimes:svg,png,jpg,jpeg,webp',
+            'color' => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('icon')) {
+            $path = $request->file('icon')->store('technologies', 'public');
+            $data['icon'] = '/storage/' . $path;
+        }
+
+        $technology->update($data);
         return back();
     }
 
@@ -167,6 +178,58 @@ class AdminController extends Controller
         return back();
     }
 
+    public function updateProject(Request $request, Project $project)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'tag' => 'nullable|string',
+            'description' => 'required|string',
+            'techs' => 'required',
+            'role' => 'nullable|string',
+            'objectives' => 'nullable|string',
+            'completion_date' => 'nullable|string',
+            'image' => 'nullable|file|image|max:10240',
+            'simulation' => 'nullable',
+            'simulation.*' => 'file|image|max:10240',
+            'simulation_type' => 'required|in:image,video',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('projects', 'public');
+            $data['image'] = '/storage/' . $path;
+        }
+
+        if ($request->hasFile('simulation')) {
+            $files = $request->file('simulation');
+
+            if ($data['simulation_type'] === 'image') {
+                if (!is_array($files)) $files = [$files];
+                
+                $paths = [];
+                foreach ($files as $file) {
+                    $path = $file->store('projects/simulations', 'public');
+                    $paths[] = '/storage/' . $path;
+                }
+                $data['simulation_path'] = json_encode($paths);
+
+            } else {
+                $path = $files->store('projects/simulations', 'public');
+                $data['simulation_path'] = '/storage/' . $path;
+            }
+        }
+
+        if (isset($data['techs']) && is_string($data['techs'])) {
+            $data['techs'] = array_values(array_filter(array_map('trim', explode("\n", $data['techs']))));
+        }
+
+        if (isset($data['objectives']) && is_string($data['objectives'])) {
+            $data['features'] = array_values(array_filter(array_map('trim', explode("\n", $data['objectives']))));
+        }
+
+        $project->update($data);
+        return back();
+    }
+
     public function storeEducation(Request $request)
     {
         $data = $request->validate([
@@ -187,6 +250,20 @@ class AdminController extends Controller
         return back();
     }
 
+    public function updateEducation(Request $request, Education $education)
+    {
+        $data = $request->validate([
+            'degree' => 'required|string',
+            'school' => 'required|string',
+            'period' => 'required|string',
+            'specialty' => 'required|string',
+            'description' => 'nullable|string',
+        ]);
+
+        $education->update($data);
+        return back();
+    }
+
     public function storeSkill(Request $request)
     {
         $data = $request->validate([
@@ -202,6 +279,18 @@ class AdminController extends Controller
     public function deleteSkill(Skill $skill)
     {
         $skill->delete();
+        return back();
+    }
+
+    public function updateSkill(Request $request, Skill $skill)
+    {
+        $data = $request->validate([
+            'category' => 'required|string',
+            'name' => 'required|string',
+            'type' => 'required|in:technical,soft',
+        ]);
+
+        $skill->update($data);
         return back();
     }
 
@@ -254,6 +343,38 @@ class AdminController extends Controller
         return back();
     }
 
+    public function updateInternship(Request $request, Internship $internship)
+    {
+        $data = $request->validate([
+            'type' => 'required|string',
+            'title' => 'required|string',
+            'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'role' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'missions' => 'required',
+            'techs' => 'required',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('companies', 'public');
+            $data['logo'] = '/storage/' . $path;
+        }
+
+        $data['period'] = date('M Y', strtotime($data['start_date'])) . ' - ' . ($data['end_date'] ? date('M Y', strtotime($data['end_date'])) : 'Present');
+        
+        if (is_string($data['missions'])) {
+            $data['missions'] = array_filter(array_map('trim', explode("\n", $data['missions'])));
+        }
+
+        if (is_string($data['techs'])) {
+            $data['techs'] = array_filter(array_map('trim', explode(",", $data['techs'])));
+        }
+
+        $internship->update($data);
+        return back();
+    }
+
     public function storeCertification(Request $request)
     {
         $data = $request->validate([
@@ -275,16 +396,26 @@ class AdminController extends Controller
 
     public function deleteCertification(Certification $certification)
     {
-        if ($certification->image && file_exists(public_path($certification->image))) {
-            // Check if file exists to avoid errors, though usually harmless on some setups
-            // We can delete it. storage path vs public path mapping.
-            // If stored in 'public/certifications', it's in storage/app/public/certifications
-            // public_path('/storage/...') maps to the symlinked folder.
-            // Simplified:
-             @unlink(public_path($certification->image));
+        $certification->delete();
+        return back();
+    }
+
+    public function updateCertification(Request $request, Certification $certification)
+    {
+        $data = $request->validate([
+            'title' => 'required|string',
+            'org' => 'required|string',
+            'date' => 'required|string',
+            'link' => 'nullable|string|url',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf|max:10240',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('certifications', 'public');
+            $data['image'] = '/storage/' . $path;
         }
 
-        $certification->delete();
+        $certification->update($data);
         return back();
     }
 
@@ -304,6 +435,19 @@ class AdminController extends Controller
     public function deleteAdditionalExp(AdditionalExperience $experience)
     {
         $experience->delete();
+        return back();
+    }
+
+    public function updateAdditionalExp(Request $request, AdditionalExperience $experience)
+    {
+        $data = $request->validate([
+            'title' => 'required|string',
+            'type' => 'required|string',
+            'description' => 'required|string',
+            'icon' => 'nullable|string',
+        ]);
+
+        $experience->update($data);
         return back();
     }
 }

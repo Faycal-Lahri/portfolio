@@ -26,7 +26,12 @@ import EtheralShadow from './ui/etheral-shadow';
 
 export default function Projects({ data }) {
     const [selectedProject, setSelectedProject] = useState(null);
-    const projects = data && data.length > 0 ? data : defaultProjects;
+    const rawProjects = data && data.length > 0 ? data : defaultProjects;
+    const projects = [...rawProjects].sort((a, b) => {
+        const dateA = new Date(a.completion_date || a.created_at || 0);
+        const dateB = new Date(b.completion_date || b.created_at || 0);
+        return dateB - dateA;
+    });
 
     useEffect(() => {
         if (selectedProject) {

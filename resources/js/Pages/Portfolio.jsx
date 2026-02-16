@@ -16,10 +16,10 @@ import StaggeredMenu from '../Components/StaggeredMenu';
 const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '#' },
     { label: 'About', ariaLabel: 'About me', link: '#about' },
-    { label: 'Education', ariaLabel: 'My education', link: '#education' },
-    { label: 'Skills', ariaLabel: 'My skills', link: '#skills' },
-    { label: 'Work', ariaLabel: 'Academic projects', link: '#work' },
     { label: 'Professional Exp.', ariaLabel: 'Professional experiences', link: '#stages' },
+    { label: 'Work', ariaLabel: 'Academic projects', link: '#work' },
+    { label: 'Skills', ariaLabel: 'My skills', link: '#skills' },
+    { label: 'Education', ariaLabel: 'My education', link: '#education' },
     { label: 'Certifications', ariaLabel: 'My certifications', link: '#certifications' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '#contact' }
 ];
@@ -145,10 +145,10 @@ export default function Portfolio({ about, education, skills, technologies, proj
                     <Hero isDarkMode={isDark} />
                     <TechMarquee technologies={technologies} />
                     <About data={about} />
-                    <Education data={education} />
-                    <Skills data={skills} />
-                    <Projects data={projects} />
                     <Internships data={internships} />
+                    <Projects data={projects} />
+                    <Skills data={skills} />
+                    <Education data={education} />
                     <Certifications data={certifications} />
                     <Contact about={about} />
                 </div>

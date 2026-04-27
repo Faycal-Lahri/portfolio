@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Head } from '@inertiajs/react';
 import LiquidEther from '../Components/LiquidEther';
 import Hero from '../Components/Hero';
 import TechMarquee from '../Components/TechMarquee';
@@ -56,6 +57,7 @@ export default function Portfolio({ about, education, skills, technologies, proj
 
     return (
         <div className="min-h-screen w-full relative">
+            <Head title="Faycal Lahri | Portfolio" />
             <main ref={containerRef} className="bg-white text-black dark:bg-black dark:text-white min-h-screen w-full relative transition-colors duration-700">
 
                 {/* Staggered Menu - New Implementation */}

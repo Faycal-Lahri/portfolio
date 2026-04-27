@@ -450,4 +450,24 @@ class AdminController extends Controller
         $experience->update($data);
         return back();
     }
+    public function showLoginForm()
+    {
+        return Inertia::render('Admin/Login');
+    }
+
+    public function login(Request $request)
+    {
+        if ($request->password === 'Faycal2026@') {
+            $request->session()->put('admin_authenticated', true);
+            return redirect()->route('dashboard');
+        }
+
+        return back()->withErrors(['password' => 'Mot de passe incorrect']);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('admin_authenticated');
+        return redirect()->route('portfolio.index');
+    }
 }

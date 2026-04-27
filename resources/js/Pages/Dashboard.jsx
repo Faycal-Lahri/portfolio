@@ -12,6 +12,7 @@ const IconBriefcase = ({ className }) => <svg viewBox="0 0 24 24" fill="none" st
 const IconGlobe = ({ className }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>;
 const IconAward = ({ className }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>;
 const IconCpu = ({ className }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>;
+const IconLogOut = ({ className }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
 
 const SidebarItem = ({ active, icon, label, onClick }) => (
     <button
@@ -326,12 +327,23 @@ export default function Dashboard({ auth, about, education, skills, technologies
                         </nav>
 
                         <div className="mt-auto border-t border-white/10 pt-6">
-                            <div className="flex items-center gap-4 px-3 mb-4">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-700 to-black border border-white/20 flex items-center justify-center text-xs font-bold shadow-inner">Sys</div>
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-semibold text-white/90">Local Admin</span>
-                                    <span className="text-[10px] text-white/40 uppercase tracking-widest">Connected</span>
+                            <div className="flex items-center justify-between px-3 mb-4 group/user">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-700 to-black border border-white/20 flex items-center justify-center text-xs font-bold shadow-inner">Sys</div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-semibold text-white/90">Local Admin</span>
+                                        <span className="text-[10px] text-white/40 uppercase tracking-widest">Connected</span>
+                                    </div>
                                 </div>
+                                <Link 
+                                    href={route('admin.logout')} 
+                                    method="post" 
+                                    as="button" 
+                                    className="p-2 rounded-lg bg-white/5 text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover/user:opacity-100"
+                                    title="Déconnexion"
+                                >
+                                    <IconLogOut className="w-4 h-4" />
+                                </Link>
                             </div>
                         </div>
                     </div>

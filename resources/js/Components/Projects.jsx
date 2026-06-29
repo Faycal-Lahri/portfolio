@@ -49,7 +49,6 @@ export default function Projects({ data }) {
                 <EtheralShadow
                     className="w-full h-full"
                     color="var(--etheral-color)"
-                    animation={{ scale: 100, speed: 80 }}
                     noise={{ scale: 1.2 }}
                     sizing="fill"
                 />

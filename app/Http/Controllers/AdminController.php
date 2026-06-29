@@ -21,11 +21,11 @@ class AdminController extends Controller
     {
         return Inertia::render('Dashboard', [
             'about' => About::first(),
-            'education' => Education::all(),
+            'education' => Education::orderBy('start_date', 'desc')->get(),
             'skills' => Skill::all(),
             'technologies' => Technology::all(),
             'projects' => Project::all(),
-            'internships' => Internship::all(),
+            'internships' => Internship::orderBy('start_date', 'desc')->get(),
             'certifications' => Certification::all(),
             'additionalExp' => AdditionalExperience::all(),
         ]);
@@ -67,6 +67,8 @@ class AdminController extends Controller
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('technologies', 'public');
             $data['icon'] = '/storage/' . $path;
+        } else {
+            unset($data['icon']);
         }
 
         $technology->update($data);
@@ -88,11 +90,15 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('profile', 'public');
             $data['image'] = '/storage/' . $path;
+        } else {
+            unset($data['image']);
         }
 
         if ($request->hasFile('cv')) {
             $path = $request->file('cv')->store('resumes', 'public');
             $data['cv'] = '/storage/' . $path;
+        } else {
+            unset($data['cv']);
         }
 
         About::updateOrCreate(['id' => 1], $data);
@@ -197,6 +203,8 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('projects', 'public');
             $data['image'] = '/storage/' . $path;
+        } else {
+            unset($data['image']);
         }
 
         if ($request->hasFile('simulation')) {
@@ -216,6 +224,8 @@ class AdminController extends Controller
                 $path = $files->store('projects/simulations', 'public');
                 $data['simulation_path'] = '/storage/' . $path;
             }
+        } else {
+            unset($data['simulation']);
         }
 
         if (isset($data['techs']) && is_string($data['techs'])) {
@@ -359,6 +369,8 @@ class AdminController extends Controller
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('companies', 'public');
             $data['logo'] = '/storage/' . $path;
+        } else {
+            unset($data['logo']);
         }
 
         $data['period'] = date('M Y', strtotime($data['start_date'])) . ' - ' . ($data['end_date'] ? date('M Y', strtotime($data['end_date'])) : 'Present');
@@ -413,6 +425,8 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('certifications', 'public');
             $data['image'] = '/storage/' . $path;
+        } else {
+            unset($data['image']);
         }
 
         $certification->update($data);

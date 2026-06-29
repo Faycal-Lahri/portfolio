@@ -39,7 +39,7 @@ export default function Certifications({ data }) {
                     pixelSize={screenSize.lessThan('md') ? 48 : 80}
                     fadeDuration={500}
                     delay={100}
-                    pixelClassName="bg-orange-500/70 dark:bg-orange-400/80 rounded-full"
+                    pixelClassName="bg-neutral-700/80 dark:bg-white/90 rounded-full"
                 />
             </div>
 

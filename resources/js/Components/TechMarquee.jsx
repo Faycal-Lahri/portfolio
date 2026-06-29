@@ -71,21 +71,36 @@ export default function TechMarquee({ technologies = [] }) {
 
     if (technologies && technologies.length > 0) {
         // Map DB data to component format
-        const formattedTechs = technologies.map(t => ({
-            name: t.name,
-            color: t.color || '#000000',
-            // Create a component that renders the image
-            Icon: (props) => (
-                <img
-                    src={t.icon}
-                    alt={t.name}
-                    className="w-full h-full object-contain"
-                    {...props}
-                    // Remove fill since it's an image, or use CSS filter if needed
-                    style={{ filter: t.color ? 'none' : 'grayscale(100%)' }}
-                />
-            )
-        }));
+        const formattedTechs = technologies.map(t => {
+            const isUploaded = t.icon && (t.icon.startsWith('/') || t.icon.startsWith('http'));
+            return {
+                name: t.name,
+                color: t.color || '#000000',
+                Icon: ({ className, ...props }) => {
+                    if (isUploaded) {
+                        return (
+                            <div className={`rounded-xl border border-neutral-200/80 overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm ${className}`}>
+                                <img
+                                    src={t.icon}
+                                    alt={t.name}
+                                    className="w-full h-full object-contain"
+                                    {...props}
+                                />
+                            </div>
+                        );
+                    }
+                    return (
+                        <img
+                            src={t.icon}
+                            alt={t.name}
+                            className="w-full h-full object-contain"
+                            {...props}
+                            style={{ filter: t.color ? 'none' : 'grayscale(100%)' }}
+                        />
+                    );
+                }
+            };
+        });
 
         // Split into two rows
         const midpoint = Math.ceil(formattedTechs.length / 2);

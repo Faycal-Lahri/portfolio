@@ -18,11 +18,11 @@ class PortfolioController extends Controller
     {
         return Inertia::render('Portfolio', [
             'about' => About::first(),
-            'education' => Education::orderBy('period', 'desc')->get(),
+            'education' => Education::orderBy('start_date', 'desc')->get(),
             'skills' => Skill::all()->groupBy('category'),
             'technologies' => \App\Models\Technology::all(),
             'projects' => Project::all(),
-            'internships' => Internship::all(),
+            'internships' => Internship::orderBy('start_date', 'desc')->get(),
             'certifications' => Certification::all(),
             'additionalExp' => AdditionalExperience::all(),
         ]);

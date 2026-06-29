@@ -7,6 +7,7 @@ const TextType = ({
     text,
     as: Component = 'div',
     typingSpeed = 50,
+    stepSize = 1,
     initialDelay = 0,
     pauseDuration = 2000,
     deletingSpeed = 30,
@@ -108,8 +109,9 @@ const TextType = ({
                 if (currentCharIndex < processedText.length) {
                     timeout = setTimeout(
                         () => {
-                            setDisplayedText(prev => prev + processedText[currentCharIndex]);
-                            setCurrentCharIndex(prev => prev + 1);
+                            const nextIndex = Math.min(currentCharIndex + stepSize, processedText.length);
+                            setDisplayedText(processedText.slice(0, nextIndex));
+                            setCurrentCharIndex(nextIndex);
                         },
                         variableSpeed ? getRandomSpeed() : typingSpeed
                     );
@@ -135,6 +137,7 @@ const TextType = ({
         displayedText,
         isDeleting,
         typingSpeed,
+        stepSize,
         deletingSpeed,
         pauseDuration,
         textArray,

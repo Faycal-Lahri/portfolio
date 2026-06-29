@@ -28,7 +28,7 @@ const menuItems = [
 
 
 export default function Portfolio({ about, education, skills, technologies, projects, internships, certifications, additionalExp }) {
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState(false);
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -122,11 +122,11 @@ export default function Portfolio({ about, education, skills, technologies, proj
                         colors={isDark ? darkColors : lightColors}
                         mouseForce={20}
                         cursorSize={100}
-                        isViscous
+                        isViscous={false}
                         viscous={30}
-                        iterationsViscous={32}
-                        iterationsPoisson={32}
-                        resolution={0.5}
+                        iterationsViscous={8}
+                        iterationsPoisson={14}
+                        resolution={0.35}
                         isBounce={false}
                         autoDemo
                         autoSpeed={0.5}

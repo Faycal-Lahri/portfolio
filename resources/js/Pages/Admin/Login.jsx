@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Head } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
         password: '',
     });
+    const [isFocused, setIsFocused] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
@@ -12,58 +14,85 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white font-sans selection:bg-purple-500/30">
-            <Head title="Admin Login" />
+        <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-[#1d1d1f] font-sans selection:bg-black/10 overflow-hidden relative">
+            <Head title="Access Portal" />
             
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"></div>
-            </div>
+            {/* Ambient subtle light glow behind the card */}
+            <div className="absolute w-[600px] h-[600px] rounded-full bg-white/60 blur-[100px] pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+            
+            {/* Clean Apple grid lines */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
-            <div className="relative w-full max-w-md p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden group">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50"></div>
-                
-                <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                        Zone Sécurisée
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.96, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-sm p-10 rounded-[2rem] border border-neutral-200/80 bg-white/70 backdrop-blur-3xl shadow-[0_30px_70px_rgba(0,0,0,0.06)] flex flex-col items-stretch text-center ring-1 ring-black/[0.02]"
+            >
+                {/* Header */}
+                <div className="mb-10">
+                    <div className="mx-auto w-11 h-11 rounded-full border border-neutral-200 flex items-center justify-center bg-white/50 mb-5 shadow-sm">
+                        <svg className="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <span className="text-[9px] font-mono tracking-[0.4em] text-neutral-400 uppercase block mb-1">Access Gate</span>
+                    <h1 className="text-xl font-semibold tracking-tight text-neutral-800">
+                        Admin Login
                     </h1>
-                    <p className="text-white/40 text-sm">Entrez votre code d'accès pour continuer</p>
                 </div>
 
                 <form onSubmit={submit} className="space-y-6">
-                    <div>
-                        <input
-                            type="password"
-                            name="password"
-                            value={data.password}
-                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-center text-xl tracking-widest focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all placeholder:text-white/10"
-                            placeholder="••••••••"
-                            autoFocus
-                            onChange={(e) => setData('password', e.target.value)}
-                        />
+                    <div className="space-y-2 text-left">
+                        <label className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase pl-1">Access Key</label>
+                        <motion.div
+                            animate={{
+                                borderColor: isFocused ? '#1d1d1f' : '#e5e5e7',
+                                boxShadow: isFocused ? '0 0 20px rgba(0,0,0,0.02)' : '0 0 0px rgba(0,0,0,0)'
+                            }}
+                            transition={{ duration: 0.3 }}
+                            className="rounded-xl border bg-white shadow-inner"
+                        >
+                            <input
+                                type="password"
+                                name="password"
+                                value={data.password}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setIsFocused(false)}
+                                className="w-full bg-transparent border-0 px-4 py-3.5 text-center text-xl tracking-[0.3em] text-[#1d1d1f] focus:outline-none focus:ring-0 placeholder:text-neutral-200 font-mono"
+                                placeholder="••••••••"
+                                autoFocus
+                                onChange={(e) => setData('password', e.target.value)}
+                            />
+                        </motion.div>
                         {errors.password && (
-                            <p className="mt-2 text-red-400 text-xs text-center">{errors.password}</p>
+                            <motion.p 
+                                initial={{ opacity: 0, y: -5 }} 
+                                animate={{ opacity: 1, y: 0 }} 
+                                className="mt-2 text-red-500 text-xs text-center font-mono tracking-wide"
+                            >
+                                {errors.password}
+                            </motion.p>
                         )}
                     </div>
 
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
                         type="submit"
                         disabled={processing}
-                        className="w-full bg-white text-black font-semibold py-3 rounded-xl hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2 group/btn"
+                        className="w-full bg-[#1d1d1f] hover:bg-black text-white py-3.5 rounded-xl font-bold uppercase text-xs tracking-widest font-mono transition-all disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center shadow-lg shadow-black/10"
                     >
-                        <span>Déverrouiller</span>
-                        <svg className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </button>
+                        {processing ? 'Verifying...' : 'Authorize'}
+                    </motion.button>
                 </form>
 
-                <div className="mt-8 pt-6 border-t border-white/5 text-center">
-                    <a href="/" className="text-white/20 hover:text-white/40 text-xs transition-colors">
-                        Retour au site
+                <div className="mt-10 pt-6 border-t border-neutral-100">
+                    <a href="/" className="text-neutral-400 hover:text-neutral-600 text-[10px] transition-colors font-mono tracking-[0.2em] uppercase">
+                        ← Exit Node
                     </a>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

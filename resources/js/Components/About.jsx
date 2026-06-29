@@ -59,14 +59,13 @@ export default function About({ data }) {
                         <div className="absolute top-0 left-0 w-full h-full text-4xl md:text-6xl font-extralight leading-[1.1] text-black dark:text-white tracking-tight">
                             <TextType
                                 text={[bio]}
-                                typingSpeed={50}
+                                typingSpeed={3}
+                                stepSize={8}
                                 pauseDuration={5000}
                                 showCursor={true}
                                 cursorCharacter="|"
                                 loop={false}
-                                variableSpeedEnabled={true}
-                                variableSpeedMin={30}
-                                variableSpeedMax={70}
+                                variableSpeed={{ min: 1, max: 4 }}
                             />
                         </div>
 

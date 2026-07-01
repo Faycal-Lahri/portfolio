@@ -1,0 +1,63 @@
+{
+  "_LiquidEther-fNT7h6va.js": {
+    "file": "assets/LiquidEther-fNT7h6va.js",
+    "name": "LiquidEther",
+    "imports": [
+      "resources/js/app.jsx",
+      "_proxy-IEjtq3zZ.js"
+    ]
+  },
+  "_proxy-IEjtq3zZ.js": {
+    "file": "assets/proxy-IEjtq3zZ.js",
+    "name": "proxy",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/Pages/Admin/Login.jsx": {
+    "file": "assets/Login-UZFxnjsf.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Admin/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_proxy-IEjtq3zZ.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard.jsx": {
+    "file": "assets/Dashboard-BvMFPvS7.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_LiquidEther-fNT7h6va.js",
+      "_proxy-IEjtq3zZ.js"
+    ]
+  },
+  "resources/js/Pages/Portfolio.jsx": {
+    "file": "assets/Portfolio-DE97A663.js",
+    "name": "Portfolio",
+    "src": "resources/js/Pages/Portfolio.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_LiquidEther-fNT7h6va.js",
+      "_proxy-IEjtq3zZ.js"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-BpaP0j9c.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Admin/Login.jsx",
+      "resources/js/Pages/Dashboard.jsx",
+      "resources/js/Pages/Portfolio.jsx"
+    ],
+    "css": [
+      "assets/app-66-BhwWv.css"
+    ]
+  }
+}
